@@ -1,5 +1,6 @@
 "use client";
 
+import { register } from "@/actions/register";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -12,15 +13,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icons } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password";
+import { Show } from "@/components/utility/Show";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Icons } from "../ui/icons";
-import { Show } from "../utility/Show";
-import { register } from "@/actions/register";
 
 export const RegisterForm = () => {
   const [isPending, startTransaction] = useTransition();
@@ -103,11 +104,10 @@ export const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       disabled={isPending}
                       {...field}
                       placeholder="***********"
-                      type="password"
                       autoComplete="new-password webauthn"
                     />
                   </FormControl>

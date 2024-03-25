@@ -26,7 +26,6 @@ import { z } from "zod";
 export const LoginForm = () => {
   const [isPending, startTransaction] = useTransition();
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -38,8 +37,7 @@ export const LoginForm = () => {
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransaction(() => {
       login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        setError(data?.error);
       });
     });
   };
@@ -96,7 +94,6 @@ export const LoginForm = () => {
             />
           </div>
           <FormError message={error} />
-          <FormSuccess message={success} />
           <Button
             disabled={isPending}
             type="submit"

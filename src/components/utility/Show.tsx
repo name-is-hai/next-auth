@@ -17,7 +17,7 @@ Show.When = ({
   isTrue,
   children,
 }: {
-  isTrue?: boolean;
+  isTrue?: boolean | undefined;
   children: React.ReactNode;
 }) => isTrue && children;
 Show.Else = ({ children }: { children: React.ReactNode }) => children;

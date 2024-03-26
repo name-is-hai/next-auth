@@ -2,7 +2,7 @@
 
 import { getPasswordRestTokenByToken as getPasswordResetTokenByToken } from "@/data/password-rest-token";
 import { getUserByEmail } from "@/data/user";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { NewPasswordSchema } from "@/schemas";
 import { hash } from "bcryptjs";
 import { z } from "zod";
@@ -43,12 +43,12 @@ export const newPassword = async (
 
   const hashedPassword = await hash(password, 10);
 
-  await db.user.update({
+  await prisma.user.update({
     where: { id: existingUser.id },
     data: { password: hashedPassword },
   });
 
-  await db.passwordResetToken.delete({
+  await prisma.passwordResetToken.delete({
     where: { id: existingToken.id },
   });
 

@@ -1,7 +1,7 @@
 import { getPasswordRestTokenByEmail } from "@/data/password-rest-token";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getVerificationTokenByEmail } from "@/data/verification-token";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
@@ -10,13 +10,13 @@ export const generateTwoFactorToken = async (email: string) => {
   const expires = new Date(new Date().getTime() + 3 * 60 * 1000);
   const exitsToken = await getTwoFactorTokenByEmail(email);
   if (exitsToken) {
-    await db.twoFactorToken.delete({
+    await prisma.twoFactorToken.delete({
       where: {
         id: exitsToken.id,
       },
     });
   }
-  const twoFactorToken = await db.twoFactorToken.create({
+  const twoFactorToken = await prisma.twoFactorToken.create({
     data: {
       email,
       token,
@@ -31,13 +31,13 @@ export const generatePasswordResetToken = async (email: string) => {
   const expires = new Date(new Date().getTime() + 3 * 60 * 1000);
   const exitsToken = await getPasswordRestTokenByEmail(email);
   if (exitsToken) {
-    await db.passwordResetToken.delete({
+    await prisma.passwordResetToken.delete({
       where: {
         id: exitsToken.id,
       },
     });
   }
-  const passwordResetToken = await db.passwordResetToken.create({
+  const passwordResetToken = await prisma.passwordResetToken.create({
     data: {
       email,
       token,
@@ -52,9 +52,9 @@ export const generateVerificationToken = async (email: string) => {
 
   const exitsToken = await getVerificationTokenByEmail(email);
   if (exitsToken) {
-    await db.verificationToken.delete({ where: { id: exitsToken.id } });
+    await prisma.verificationToken.delete({ where: { id: exitsToken.id } });
   }
-  const verificationToken = await db.verificationToken.create({
+  const verificationToken = await prisma.verificationToken.create({
     data: {
       token,
       email,

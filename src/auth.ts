@@ -3,7 +3,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
 
@@ -27,7 +27,7 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      await db.user.update({
+      await prisma.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
       });
@@ -49,7 +49,7 @@ export const {
 
         if (!twoFactorConfirmation) return false;
 
-        await db.twoFactorConfirmation.delete({
+        await prisma.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
         });
       }
@@ -77,7 +77,7 @@ export const {
       return token;
     },
   },
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   ...authConfig,
 });

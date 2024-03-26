@@ -1,7 +1,7 @@
 "use server";
 import { getUserByEmail } from "@/data/user";
-import { db } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
+import { prisma } from "@/lib/prisma";
 import { generateVerificationToken } from "@/lib/token";
 import { RegisterSchema } from "@/schemas";
 import { hash } from "bcryptjs";
@@ -21,7 +21,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Email already in use!" };
   }
 
-  await db.user.create({
+  await prisma.user.create({
     data: {
       email,
       name,

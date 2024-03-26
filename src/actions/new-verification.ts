@@ -2,7 +2,7 @@
 
 import { getUserByEmail } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 
 export const newVerification = async (token: string) => {
   const exitsToken = await getVerificationTokenByToken(token);
@@ -26,7 +26,7 @@ export const newVerification = async (token: string) => {
     };
   }
 
-  await db.user.update({
+  await prisma.user.update({
     where: { id: existUser.id },
     data: {
       emailVerified: new Date(),
@@ -34,7 +34,7 @@ export const newVerification = async (token: string) => {
     },
   });
 
-  await db.verificationToken.delete({
+  await prisma.verificationToken.delete({
     where: { id: exitsToken.id },
   });
   return { success: "Email verified" };

@@ -24,6 +24,12 @@ import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -33,6 +39,7 @@ export const LoginForm = () => {
       : "";
 
   const [isPending, startTransaction] = useTransition();
+  const [twoFactor, setTwoFactor] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -47,10 +54,23 @@ export const LoginForm = () => {
     setError("");
     setSuccess("");
     startTransaction(() => {
-      login(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data?.error);
+          }
+          if (data?.success) {
+            form.reset();
+            setSuccess(data?.success);
+          }
+          if (data?.twoFactor) {
+            setTwoFactor(true);
+          }
+        })
+        .catch(() => {
+          setError("Something went wrong");
+        });
     });
   };
 
@@ -60,7 +80,7 @@ export const LoginForm = () => {
       backButtonLabel="Don't have account yet?"
       backButtonHref="/auth/register"
       isPending={isPending}
-      showSocial
+      showSocial={!twoFactor}
     >
       <Form {...form}>
         <form
@@ -68,49 +88,87 @@ export const LoginForm = () => {
           className="space-y-6"
         >
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      {...field}
-                      placeholder="nameishai@example.com"
-                      autoComplete="email webauthn"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      disabled={isPending}
-                      {...field}
-                      placeholder="***********"
-                      autoComplete="new-password webauthn"
-                    />
-                  </FormControl>
-                  <Button
-                    size={"sm"}
-                    variant={"link"}
-                    className="font-normal px-0"
-                  >
-                    <Link href={"/auth/reset"}>Forgot password?</Link>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Show>
+              <Show.When isTrue={twoFactor}>
+                <FormField
+                  control={form.control}
+                  name="code"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col justify-center items-center">
+                      <FormLabel>Two Factor Code</FormLabel>
+                      <FormControl>
+                        <InputOTP
+                          maxLength={6}
+                          {...field}
+                          disabled={isPending}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Show.When>
+              <Show.Else>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          {...field}
+                          placeholder="nameishai@example.com"
+                          autoComplete="email webauthn"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <PasswordInput
+                          disabled={isPending}
+                          {...field}
+                          placeholder="***********"
+                          autoComplete="new-password webauthn"
+                        />
+                      </FormControl>
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="font-normal px-0"
+                      >
+                        <Link href={"/auth/reset"}>Forgot password?</Link>
+                      </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Show.Else>
+            </Show>
           </div>
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
@@ -124,7 +182,7 @@ export const LoginForm = () => {
                 <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
               </Show.When>
             </Show>
-            Login
+            {twoFactor ? "Confirm" : "Login"}
           </Button>
         </form>
       </Form>

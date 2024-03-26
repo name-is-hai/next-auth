@@ -1,8 +1,8 @@
 "use server";
-import { generateVerificationToken } from "@/data/token";
 import { getUserByEmail } from "@/data/user";
 import { db } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
+import { generateVerificationToken } from "@/lib/token";
 import { RegisterSchema } from "@/schemas";
 import { hash } from "bcryptjs";
 import { z } from "zod";

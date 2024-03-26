@@ -1,8 +1,8 @@
 "use server";
 
-import { generatePasswordResetToken } from "@/data/token";
 import { getUserByEmail } from "@/data/user";
 import { sendPasswordResetEmail } from "@/lib/mail";
+import { generatePasswordResetToken } from "@/lib/token";
 import { ResetSchema } from "@/schemas";
 import { z } from "zod";
 export const reset = async (value: z.infer<typeof ResetSchema>) => {

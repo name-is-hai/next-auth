@@ -1,10 +1,11 @@
-import NextAuth, { type DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { type DefaultSession } from "next-auth";
 
 import authConfig from "@/auth.config";
-import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
+import { db } from "@/lib/db";
 import { UserRole } from "@prisma/client";
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
 
 declare module "next-auth" {
   interface Session {
@@ -22,7 +23,6 @@ export const {
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
-    // signOut: "/logout",
     error: "/auth/error",
   },
   events: {
@@ -35,10 +35,24 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider! == "credentials") return true;
+      if (account?.provider !== "credentials") return true;
       if (!user.id) return false;
-      const exitUser = await getUserById(user.id);
-      if (!exitUser?.emailVerified) return false;
+
+      const existingUser = await getUserById(user.id);
+
+      if (!existingUser?.emailVerified) return false;
+
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id,
+        );
+
+        if (!twoFactorConfirmation) return false;
+
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        });
+      }
 
       return true;
     },

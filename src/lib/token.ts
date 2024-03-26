@@ -1,7 +1,30 @@
+import { getPasswordRestTokenByEmail } from "@/data/password-rest-token";
+import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getVerificationTokenByEmail } from "@/data/verification-token";
 import { db } from "@/lib/db";
+import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
-import { getPasswordRestTokenByEmail } from "./password-rest-token";
+
+export const generateTwoFactorToken = async (email: string) => {
+  const token = crypto.randomInt(100_000, 1_000_000).toString();
+  const expires = new Date(new Date().getTime() + 3 * 60 * 1000);
+  const exitsToken = await getTwoFactorTokenByEmail(email);
+  if (exitsToken) {
+    await db.twoFactorToken.delete({
+      where: {
+        id: exitsToken.id,
+      },
+    });
+  }
+  const twoFactorToken = await db.twoFactorToken.create({
+    data: {
+      email,
+      token,
+      expires,
+    },
+  });
+  return twoFactorToken;
+};
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = uuidv4();

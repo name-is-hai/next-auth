@@ -3,6 +3,7 @@
 import { login } from "@/actions/login";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,6 +33,7 @@ export const LoginForm = () => {
 
   const [isPending, startTransaction] = useTransition();
   const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -41,9 +43,12 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
     startTransaction(() => {
       login(values).then((data) => {
         setError(data?.error);
+        setSuccess(data?.success);
       });
     });
   };
@@ -100,6 +105,7 @@ export const LoginForm = () => {
             />
           </div>
           <FormError message={error || urlError} />
+          <FormSuccess message={success} />
           <Button
             disabled={isPending}
             type="submit"

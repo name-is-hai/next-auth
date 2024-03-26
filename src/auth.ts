@@ -22,7 +22,7 @@ export const {
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
-    signOut: "/logout",
+    // signOut: "/logout",
     error: "/auth/error",
   },
   events: {
@@ -34,13 +34,14 @@ export const {
     },
   },
   callbacks: {
-    // async signIn({ user }) {
-    //   if (!user.id) return false;
-    //   const exitUser = await getUserById(user.id);
-    //   if (!exitUser || !exitUser.emailVerified) return false;
+    async signIn({ user, account }) {
+      if (account?.provider! == "credentials") return true;
+      if (!user.id) return false;
+      const exitUser = await getUserById(user.id);
+      if (!exitUser?.emailVerified) return false;
 
-    //   return true;
-    // },
+      return true;
+    },
     async session({ token, session }) {
       console.log({
         sessionToken: token,

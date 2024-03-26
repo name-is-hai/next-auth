@@ -4,7 +4,15 @@ import { FaGithub } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Show } from "@/components/utility/Show";
 import { Icons } from "@/components/ui/icons";
-export const Social = ({ isPending }: { isPending: boolean }) => {
+import { signIn } from "next-auth/react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+export const Social = ({ isPending }: { isPending?: boolean }) => {
+  const onClick = (provider: "google" | "github") => {
+    signIn(provider, {
+      callbackUrl: DEFAULT_LOGIN_REDIRECT,
+    });
+  };
+
   return (
     <div className="flex items-center w-full gap-x-2">
       <Button
@@ -12,7 +20,7 @@ export const Social = ({ isPending }: { isPending: boolean }) => {
         size={"lg"}
         className="w-full"
         variant={"outline"}
-        onClick={() => {}}
+        onClick={() => onClick("google")}
       >
         <Show>
           <Show.When isTrue={isPending}>
@@ -28,7 +36,7 @@ export const Social = ({ isPending }: { isPending: boolean }) => {
         size={"lg"}
         className="w-full"
         variant={"outline"}
-        onClick={() => {}}
+        onClick={() => onClick("github")}
       >
         <Show>
           <Show.When isTrue={isPending}>

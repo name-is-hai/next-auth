@@ -16,7 +16,7 @@ type CardWrapperProps = {
   headerLabel: string;
   backButtonLabel: string;
   backButtonHref: string;
-  isPending: boolean;
+  isPending?: boolean;
   showSocial?: boolean;
 };
 export const CardWrapper = ({

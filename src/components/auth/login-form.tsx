@@ -3,7 +3,6 @@
 import { login } from "@/actions/login";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,11 +18,18 @@ import { PasswordInput } from "@/components/ui/password";
 import { Show } from "@/components/utility/Show";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider"
+      : "";
+
   const [isPending, startTransaction] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -93,7 +99,7 @@ export const LoginForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <Button
             disabled={isPending}
             type="submit"

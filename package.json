@@ -10,9 +10,7 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier . --check",
     "prettier:fix": "prettier . --write",
-    "auth_secret": "npx auth secret",
-    "generate": "npx prisma generate",
-    "studio": "npx prisma studio"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.0",

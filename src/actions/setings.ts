@@ -7,6 +7,7 @@ import { generateVerificationToken } from "@/lib/token";
 import { SettingsSchema } from "@/schemas";
 import { compare, hash } from "bcryptjs";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
@@ -49,7 +50,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     values.newPassword = undefined;
   }
 
-  await prisma?.user.update({
+  await prisma.user.update({
     where: { id: exitUser.id },
     data: {
       ...values,

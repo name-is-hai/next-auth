@@ -26,7 +26,7 @@ export const NewVerificationForm = () => {
       setError(data.error);
     });
     console.log(token);
-  }, [token]);
+  }, [token, success, error]);
 
   useEffect(() => {
     onSubmit();

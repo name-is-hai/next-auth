@@ -6,6 +6,7 @@ import { getUserById } from "@/data/user";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
+import { getAccountByUserId } from "./data/account";
 
 export type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
@@ -72,6 +73,9 @@ export const {
       }
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.isOAuth = token.isOAuth as boolean;
       }
 
       return session;
@@ -80,7 +84,11 @@ export const {
       if (!token.sub) return token;
       const exitUser = await getUserById(token.sub);
       if (!exitUser) return token;
+      const existingAccount = await getAccountByUserId(exitUser.id);
+
+      token.isOAuth = !!existingAccount;
       token.role = exitUser.role;
+      token.name = exitUser.name;
       token.isTwoFactorEnabled = exitUser.isTwoFactorEnabled;
       return token;
     },

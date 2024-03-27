@@ -22,7 +22,10 @@ export default async function Home() {
         </h1>
         <p className="text-white text-lg">A simple authentication service</p>
         <div>
-          <LoginButton>
+          <LoginButton
+            mode="modal"
+            asChild
+          >
             <Button
               variant={"secondary"}
               size={"lg"}

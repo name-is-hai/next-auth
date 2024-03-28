@@ -16,7 +16,6 @@ bun dev
 Second, create a .env file in the project root and add the following variables:
 ```bash
 DATABASE_URL=
-DIRECT_URL=
 
 AUTH_SECRET=
 

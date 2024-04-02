@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { currentDate } from "@/lib/date";
-import { UserRole } from "@prisma/client";
+import { user } from "drizzle/schema";
 import { toast } from "sonner";
 
 export default function AdminPage() {
@@ -79,7 +79,7 @@ export default function AdminPage() {
         <p className="text-2xl font-semibold text-center">🔑 Admin</p>
       </CardHeader>
       <CardContent className="space-y-4">
-        <RoleGate allowedRole={UserRole.ADMIN}>
+        <RoleGate allowedRole={user.role.enumValues[0]}>
           <FormSuccess message="You are allowed to see this content!" />
         </RoleGate>
         <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">

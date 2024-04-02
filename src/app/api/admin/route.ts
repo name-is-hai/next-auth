@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const role = await currentRole();
-  if (role?.[0] === user.role.enumValues[0]) {
+  if (role === user.role.enumValues[1]) {
     console.log({ success: "Allowed!" });
     return new NextResponse(null, { status: 200 });
   }

@@ -6,7 +6,7 @@ import { user } from "drizzle/schema";
 
 type RoleGateProps = {
   children: React.ReactNode;
-  allowedRole: typeof user.role.enumValues;
+  allowedRole: (typeof user.role.enumValues)[number];
 };
 
 export const RoleGate = ({ children, allowedRole }: RoleGateProps) => {

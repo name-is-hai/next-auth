@@ -9,8 +9,10 @@ import { twoFactorConfirmation, user } from "drizzle/schema";
 import { getAccountByUserId } from "@/data/account";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
+type UserRole = (typeof user.role.enumValues)[number];
+
 export type ExtendedUser = DefaultSession["user"] & {
-  role: typeof user.role.enumValues ;
+  role: UserRole;
   isTwoFactorEnabled: boolean;
   isOAuth: boolean;
 };
@@ -71,7 +73,7 @@ export const {
         session.user.id = token.sub;
       }
       if (token.role && session.user) {
-        session.user.role = token.role as typeof user.role.enumValues;
+        session.user.role = token.role as UserRole;
       }
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;

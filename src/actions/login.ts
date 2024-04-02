@@ -5,17 +5,15 @@ import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getUserByEmail } from "@/data/user";
 import { sendTwoFactorEmail, sendVerificationEmail } from "@/lib/mail";
+import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { LoginSchema } from "@/schemas";
 import { db as drizzle } from "drizzle";
 import { eq } from "drizzle-orm";
 import {
   twoFactorConfirmation,
-  twoFactorToken,
-  user,
-  verificationToken,
+  twoFactorToken
 } from "drizzle/schema";
-import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
 

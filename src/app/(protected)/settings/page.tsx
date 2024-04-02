@@ -5,6 +5,8 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { user } from "drizzle/schema";
+
 import {
   Form,
   FormControl,
@@ -28,7 +30,6 @@ import { Show } from "@/components/utility/Show";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SettingsSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserRole } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -36,19 +37,19 @@ import { z } from "zod";
 
 export default function SettingsPage() {
   const { update } = useSession();
-  const { user } = useCurrentUser();
+  const { user: currentUser } = useCurrentUser();
   const [isPending, startTransaction] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: user?.name ?? undefined,
-      email: user?.email ?? undefined,
+      name: currentUser?.name ?? undefined,
+      email: currentUser?.email ?? undefined,
       password: undefined,
       newPassword: undefined,
-      role: user?.role ?? undefined,
-      isTwoFactorEnabled: user?.isTwoFactorEnabled ?? undefined,
+      role: currentUser?.role ?? undefined,
+      isTwoFactorEnabled: currentUser?.isTwoFactorEnabled ?? undefined,
     },
   });
 
@@ -106,7 +107,7 @@ export default function SettingsPage() {
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={isPending || user?.isOAuth}
+                        disabled={isPending || currentUser?.isOAuth}
                         placeholder="nameishai@example.com"
                         {...field}
                       />
@@ -117,7 +118,7 @@ export default function SettingsPage() {
               />
 
               <Show>
-                <Show.When isTrue={!user?.isOAuth}>
+                <Show.When isTrue={!currentUser?.isOAuth}>
                   <FormField
                     control={form.control}
                     name="password"
@@ -171,8 +172,12 @@ export default function SettingsPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={UserRole.ADMIN}>ADMIN</SelectItem>
-                        <SelectItem value={UserRole.USER}>USER</SelectItem>
+                        <SelectItem value={user.role.enumValues[0]}>
+                          ADMIN
+                        </SelectItem>
+                        <SelectItem value={user.role.enumValues[1]}>
+                          USER
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

@@ -5,7 +5,7 @@ export const getAccountByUserId = async (userId: string) => {
   try {
     drizzle.query.account.findFirst;
     const account = await drizzle.query.account.findFirst({
-      where: eq(schema.account.id, userId),
+      where: eq(schema.account.userId, userId),
     });
     return account;
   } catch {

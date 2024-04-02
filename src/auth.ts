@@ -1,15 +1,16 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth, { type DefaultSession } from "next-auth";
 
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user";
-import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
-import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
-import { getAccountByUserId } from "./data/account";
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import { twoFactorConfirmation, user } from "drizzle/schema";
+import { getAccountByUserId } from "@/data/account";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 export type ExtendedUser = DefaultSession["user"] & {
-  role: UserRole;
+  role: typeof user.role.enumValues ;
   isTwoFactorEnabled: boolean;
   isOAuth: boolean;
 };
@@ -30,11 +31,12 @@ export const {
     error: "/auth/error",
   },
   events: {
-    async linkAccount({ user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      });
+    async linkAccount({ user: users }) {
+      if (users?.id)
+        await drizzle
+          .update(user)
+          .set({ emailVerified: new Date() })
+          .where(eq(user.id, users.id));
     },
   },
   callbacks: {
@@ -47,15 +49,15 @@ export const {
       if (!existingUser?.emailVerified) return false;
 
       if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+        const factorConfirmation = await getTwoFactorConfirmationByUserId(
           existingUser.id,
         );
 
-        if (!twoFactorConfirmation) return false;
+        if (!factorConfirmation) return false;
 
-        await prisma.twoFactorConfirmation.delete({
-          where: { id: twoFactorConfirmation.id },
-        });
+        await drizzle
+          .delete(twoFactorConfirmation)
+          .where(eq(twoFactorConfirmation.id, factorConfirmation.id));
       }
 
       return true;
@@ -69,7 +71,7 @@ export const {
         session.user.id = token.sub;
       }
       if (token.role && session.user) {
-        session.user.role = token.role as UserRole;
+        session.user.role = token.role as typeof user.role.enumValues;
       }
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
@@ -93,7 +95,7 @@ export const {
       return token;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(drizzle),
   session: { strategy: "jwt" },
   ...authConfig,
 });

@@ -2,8 +2,9 @@
 
 import { getUserByEmail } from "@/data/user";
 import { getVerificationTokenByToken } from "@/data/verification-token";
-import { prisma } from "@/lib/prisma";
-
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import { user, verificationToken } from "drizzle/schema";
 export const newVerification = async (token: string) => {
   const exitsToken = await getVerificationTokenByToken(token);
   if (!exitsToken) {
@@ -26,16 +27,16 @@ export const newVerification = async (token: string) => {
     };
   }
 
-  await prisma.user.update({
-    where: { id: existUser.id },
-    data: {
+  await drizzle
+    .update(user)
+    .set({
       emailVerified: new Date(),
       email: exitsToken.email,
-    },
-  });
+    })
+    .where(eq(user.id, existUser.id));
 
-  await prisma.verificationToken.delete({
-    where: { id: exitsToken.id },
-  });
+  await drizzle
+    .delete(verificationToken)
+    .where(eq(verificationToken.id, existUser.id));
   return { success: "Email verified" };
 };

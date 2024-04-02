@@ -1,11 +1,11 @@
-import { UserRole } from "@prisma/client";
+import { user } from "drizzle/schema";
 import { z } from "zod";
-
+// export const SettingsSchema = createInsertSchema();
 export const SettingsSchema = z
   .object({
     name: z.string().optional(),
     isTwoFactorEnabled: z.boolean().optional(),
-    role: z.enum([UserRole.ADMIN, UserRole.USER]),
+    role: z.enum(user.role.enumValues),
     email: z.string().email().optional(),
     password: z
       .string()

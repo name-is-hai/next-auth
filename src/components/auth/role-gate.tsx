@@ -1,12 +1,12 @@
 "use client";
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { UserRole } from "@prisma/client";
-import { FormError } from "../form-error";
+import { FormError } from "@/components/form-error";
+import { user } from "drizzle/schema";
 
 type RoleGateProps = {
   children: React.ReactNode;
-  allowedRole: UserRole;
+  allowedRole: typeof user.role.enumValues;
 };
 
 export const RoleGate = ({ children, allowedRole }: RoleGateProps) => {

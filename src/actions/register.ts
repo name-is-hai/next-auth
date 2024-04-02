@@ -1,10 +1,11 @@
 "use server";
 import { getUserByEmail } from "@/data/user";
 import { sendVerificationEmail } from "@/lib/mail";
-import { prisma } from "@/lib/prisma";
 import { generateVerificationToken } from "@/lib/token";
 import { RegisterSchema } from "@/schemas";
 import { hash } from "bcryptjs";
+import { db as drizzle } from "drizzle";
+import { user } from "drizzle/schema";
 import { z } from "zod";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
@@ -21,12 +22,10 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Email already in use!" };
   }
 
-  await prisma.user.create({
-    data: {
-      email,
-      name,
-      password: hashedPassword,
-    },
+  await drizzle.insert(user).values({
+    email,
+    name,
+    password: hashedPassword,
   });
   const verificationToken = await generateVerificationToken(email);
   // TODO: Send verification email notification

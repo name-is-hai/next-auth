@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Icons } from "@/components/ui/icons";
+import { PasswordInput } from "@/components/ui/password";
 import { Show } from "@/components/utility/Show";
 import { NewPasswordSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +22,6 @@ import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { PasswordInput } from "../ui/password";
 
 export const NewPasswordForm = () => {
   const searchParams = useSearchParams();

@@ -5,7 +5,14 @@ import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getUserByEmail } from "@/data/user";
 import { sendTwoFactorEmail, sendVerificationEmail } from "@/lib/mail";
-import { prisma } from "@/lib/prisma";
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import {
+  twoFactorConfirmation,
+  twoFactorToken,
+  user,
+  verificationToken,
+} from "drizzle/schema";
 import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas";
@@ -35,36 +42,30 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   if (exitUser.isTwoFactorEnabled && exitUser.email) {
     if (code) {
-      const twoFactorToken = await getTwoFactorTokenByEmail(exitUser.email);
-      if (!twoFactorToken || twoFactorToken.token !== code) {
+      const factorToken = await getTwoFactorTokenByEmail(exitUser.email);
+      if (!factorToken || factorToken.token !== code) {
         return { error: "Invalid code!" };
       }
 
-      const hasExpired = new Date(twoFactorToken.expires) < new Date();
+      const hasExpired = new Date(factorToken.expires) < new Date();
       if (hasExpired) {
         return { error: "Code expired!" };
       }
-      await prisma.twoFactorToken.delete({
-        where: {
-          id: twoFactorToken.id,
-        },
-      });
+      await drizzle
+        .delete(twoFactorToken)
+        .where(eq(twoFactorToken.id, factorToken.id));
 
       const existConfirmation = await getTwoFactorConfirmationByUserId(
         exitUser.id,
       );
       if (existConfirmation) {
-        await prisma.twoFactorConfirmation.delete({
-          where: {
-            id: existConfirmation.id,
-          },
-        });
+        await drizzle
+          .delete(twoFactorConfirmation)
+          .where(eq(twoFactorConfirmation.id, existConfirmation.id));
       }
 
-      await prisma.twoFactorConfirmation.create({
-        data: {
-          userId: exitUser.id,
-        },
+      await drizzle.insert(twoFactorConfirmation).values({
+        userId: exitUser.id,
       });
     } else {
       const twoFactToken = await generateTwoFactorToken(exitUser.email);

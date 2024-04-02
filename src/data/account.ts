@@ -1,11 +1,12 @@
-import { prisma } from "@/lib/prisma";
-
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import * as schema from "drizzle/schema";
 export const getAccountByUserId = async (userId: string) => {
   try {
-    const account = await prisma.account.findFirst({
-      where: { userId },
+    drizzle.query.account.findFirst;
+    const account = await drizzle.query.account.findFirst({
+      where: eq(schema.account.id, userId),
     });
-
     return account;
   } catch {
     return null;

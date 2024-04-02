@@ -2,7 +2,9 @@
 
 import { getPasswordRestTokenByToken as getPasswordResetTokenByToken } from "@/data/password-rest-token";
 import { getUserByEmail } from "@/data/user";
-import { prisma } from "@/lib/prisma";
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import { passwordResetToken, user, verificationToken } from "drizzle/schema";
 import { NewPasswordSchema } from "@/schemas";
 import { hash } from "bcryptjs";
 import { z } from "zod";
@@ -43,14 +45,14 @@ export const newPassword = async (
 
   const hashedPassword = await hash(password, 10);
 
-  await prisma.user.update({
-    where: { id: existingUser.id },
-    data: { password: hashedPassword },
-  });
+  await drizzle
+    .update(user)
+    .set({
+      password: hashedPassword,
+    })
+    .where(eq(user.id, existingUser.id));
 
-  await prisma.passwordResetToken.delete({
-    where: { id: existingToken.id },
-  });
+  await drizzle.delete(passwordResetToken).where(eq(user.id, existingToken.id));
 
   return { success: "Password updated!" };
 };

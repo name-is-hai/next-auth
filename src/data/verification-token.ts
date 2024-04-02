@@ -1,9 +1,10 @@
-import { prisma } from "@/lib/prisma";
-
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import * as schema from "drizzle/schema";
 export const getVerificationTokenByToken = async (token: string) => {
   try {
-    const verificationToken = await prisma.verificationToken.findUnique({
-      where: { token },
+    const verificationToken = await drizzle.query.verificationToken.findFirst({
+      where: eq(schema.verificationToken.token, token),
     });
     return verificationToken;
   } catch (error) {
@@ -12,8 +13,8 @@ export const getVerificationTokenByToken = async (token: string) => {
 };
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
-    const verificationToken = await prisma.verificationToken.findFirst({
-      where: { email },
+    const verificationToken = await drizzle.query.verificationToken.findFirst({
+      where: eq(schema.verificationToken.email, email),
     });
     return verificationToken;
   } catch (error) {

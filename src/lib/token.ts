@@ -1,8 +1,14 @@
 import { getPasswordRestTokenByEmail } from "@/data/password-rest-token";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { getVerificationTokenByEmail } from "@/data/verification-token";
-import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import {
+  passwordResetToken,
+  twoFactorToken,
+  verificationToken,
+} from "drizzle/schema";
 import { v4 as uuidv4 } from "uuid";
 
 export const generateTwoFactorToken = async (email: string) => {
@@ -10,20 +16,19 @@ export const generateTwoFactorToken = async (email: string) => {
   const expires = new Date(new Date().getTime() + 3 * 60 * 1000);
   const exitsToken = await getTwoFactorTokenByEmail(email);
   if (exitsToken) {
-    await prisma.twoFactorToken.delete({
-      where: {
-        id: exitsToken.id,
-      },
-    });
+    await drizzle
+      .delete(twoFactorToken)
+      .where(eq(twoFactorToken.id, exitsToken.id));
   }
-  const twoFactorToken = await prisma.twoFactorToken.create({
-    data: {
+  const factorToken = await drizzle
+    .insert(twoFactorToken)
+    .values({
       email,
       token,
       expires,
-    },
-  });
-  return twoFactorToken;
+    })
+    .returning();
+  return factorToken[0];
 };
 
 export const generatePasswordResetToken = async (email: string) => {
@@ -31,20 +36,19 @@ export const generatePasswordResetToken = async (email: string) => {
   const expires = new Date(new Date().getTime() + 3 * 60 * 1000);
   const exitsToken = await getPasswordRestTokenByEmail(email);
   if (exitsToken) {
-    await prisma.passwordResetToken.delete({
-      where: {
-        id: exitsToken.id,
-      },
-    });
+    await drizzle
+      .delete(passwordResetToken)
+      .where(eq(passwordResetToken.id, exitsToken.id));
   }
-  const passwordResetToken = await prisma.passwordResetToken.create({
-    data: {
+  const resetToken = await drizzle
+    .insert(passwordResetToken)
+    .values({
       email,
       token,
       expires,
-    },
-  });
-  return passwordResetToken;
+    })
+    .returning();
+  return resetToken[0];
 };
 export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
@@ -52,14 +56,17 @@ export const generateVerificationToken = async (email: string) => {
 
   const exitsToken = await getVerificationTokenByEmail(email);
   if (exitsToken) {
-    await prisma.verificationToken.delete({ where: { id: exitsToken.id } });
+    await drizzle
+      .delete(verificationToken)
+      .where(eq(verificationToken.id, exitsToken.id));
   }
-  const verificationToken = await prisma.verificationToken.create({
-    data: {
+  const verifiToken = await drizzle
+    .insert(verificationToken)
+    .values({
       token,
       email,
       expires,
-    },
-  });
-  return verificationToken;
+    })
+    .returning();
+  return verifiToken[0];
 };

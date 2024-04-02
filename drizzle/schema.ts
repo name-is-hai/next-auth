@@ -2,25 +2,28 @@ import type { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
 import {
   boolean,
-  integer,
-  pgTable,
+  int,
+  mysqlTable,
   text,
   timestamp,
   uniqueIndex,
-  uuid,
-} from "drizzle-orm/pg-core";
+  varchar,
+} from "drizzle-orm/mysql-core";
+import { createId } from "@paralleldrive/cuid2";
 
 // Define user table
-export const user = pgTable(
-  "User",
+export const user = mysqlTable(
+  "user",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    id: varchar("id", { length: 255 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
     name: text("name"),
-    email: text("email").unique(),
+    email: varchar("email", { length: 455 }).unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
     password: text("password"),
-    role: text("role", { enum: ["USER", "ADMIN"] })
+    role: varchar("role", { length: 10, enum: ["USER", "ADMIN"] })
       .default("USER")
       .notNull(),
     isTwoFactorEnabled: boolean("isTwoFactorEnabled").default(false).notNull(),
@@ -44,23 +47,24 @@ export const userRelationship = relations(user, ({ one, many }) => ({
 }));
 
 // Define account table
-export const account = pgTable(
-  "Account",
+export const account = mysqlTable(
+  "account",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    userId: uuid("userId")
+    userId: varchar("userId", { length: 255 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refreshToken: text("refresh_token"),
-    accessToken: text("access_token"),
-    expiresAt: integer("expires_at"),
-    tokenType: text("token_type"),
-    scope: text("scope"),
-    idToken: text("id_token"),
-    sessionState: text("session_state"),
+    type: varchar("type", { length: 255 })
+      .$type<AdapterAccount["type"]>()
+      .notNull(),
+    provider: varchar("provider", { length: 255 }).notNull(),
+    providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
+    refresh_token: varchar("refresh_token", { length: 255 }),
+    access_token: varchar("access_token", { length: 255 }),
+    expires_at: int("expires_at"),
+    token_type: varchar("token_type", { length: 255 }),
+    scope: varchar("scope", { length: 255 }),
+    id_token: varchar("id_token", { length: 2048 }),
+    session_state: varchar("session_state", { length: 255 }),
   },
   (table) => {
     return {
@@ -80,12 +84,14 @@ export const accountRelationship = relations(account, ({ one }) => ({
 }));
 
 // Define verificationToken table
-export const verificationToken = pgTable(
-  "VerificationToken",
+export const verificationToken = mysqlTable(
+  "verificationToken",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    email: text("email").notNull(),
-    token: text("token").notNull().unique(),
+    id: varchar("id", { length: 255 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    email: varchar("email", { length: 455 }).notNull(),
+    token: varchar("token", { length: 255 }).notNull().unique(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (table) => {
@@ -100,12 +106,14 @@ export const verificationToken = pgTable(
 );
 
 // Define passwordResetToken table
-export const passwordResetToken = pgTable(
-  "PasswordResetToken",
+export const passwordResetToken = mysqlTable(
+  "passwordResetToken",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    email: text("email").notNull(),
-    token: text("token").notNull().unique(),
+    id: varchar("id", { length: 255 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    email: varchar("email", { length: 455 }).notNull(),
+    token: varchar("token", { length: 255 }).notNull().unique(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (table) => {
@@ -120,12 +128,14 @@ export const passwordResetToken = pgTable(
 );
 
 // Define twoFactorToken table
-export const twoFactorToken = pgTable(
-  "TwoFactorToken",
+export const twoFactorToken = mysqlTable(
+  "twoFactorToken",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    email: text("email").notNull(),
-    token: text("token").notNull().unique(),
+    id: varchar("id", { length: 255 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    email: varchar("email", { length: 455 }).notNull(),
+    token: varchar("token", { length: 255 }).notNull().unique(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (table) => {
@@ -140,11 +150,13 @@ export const twoFactorToken = pgTable(
 );
 
 // Define twoFactorConfirmation table
-export const twoFactorConfirmation = pgTable(
-  "TwoFactorConfirmation",
+export const twoFactorConfirmation = mysqlTable(
+  "twoFactorConfirmation",
   {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    userId: uuid("userId").references(() => user.id, {
+    id: varchar("id", { length: 255 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    userId: varchar("userId", { length: 255 }).references(() => user.id, {
       onDelete: "cascade",
     }),
   },

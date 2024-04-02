@@ -1,19 +1,23 @@
-import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { Pool } from "pg";
+import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
+import { migrate } from "drizzle-orm/mysql2/migrator";
+import { createPool } from "mysql2/promise";
 
 const main = async () => {
-  // if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL missing.");
-  const connectionPool = new Pool({
-    connectionString: String(process.env.DATABASE_URL),
+  const poolConnection = createPool({
+    user: String(process.env.DATABASE_USERNAME),
+    password: process.env.DATABASE_PASSWORD,
+    host: String(process.env.DATABASE_HOST),
+    port: Number(process.env.DATABASE_PORT),
+    database: String(process.env.DATABASE_NAME),
   });
-  const db: NodePgDatabase = drizzle(connectionPool);
+  const db: MySql2Database = drizzle(poolConnection);
 
   console.log("[migrating database] Running migrations ....");
-  await migrate(db, { migrationsFolder: "./drizzle/metadata" });
+  await migrate(db, { migrationsFolder: "drizzle/metadata" });
 
   console.log("[migrate] All migrations have ran, exiting ....");
 
-  await connectionPool.end();
+  await poolConnection.end();
 };
+
 main();

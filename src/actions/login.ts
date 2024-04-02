@@ -10,10 +10,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas";
 import { db as drizzle } from "drizzle";
 import { eq } from "drizzle-orm";
-import {
-  twoFactorConfirmation,
-  twoFactorToken
-} from "drizzle/schema";
+import { twoFactorConfirmation, twoFactorToken } from "drizzle/schema";
 import { AuthError } from "next-auth";
 import { z } from "zod";
 

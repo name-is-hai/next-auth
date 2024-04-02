@@ -1,85 +1,88 @@
 {
-  "id": "fd88ce69-21f1-4847-9325-09f47a21b8c8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
-  "dialect": "pg",
+  "dialect": "mysql",
+  "id": "8b5d4759-371a-4ea2-acbe-dffebb527f5c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "Account": {
-      "name": "Account",
-      "schema": "",
+    "account": {
+      "name": "account",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
         "userId": {
           "name": "userId",
-          "type": "uuid",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "type": {
           "name": "type",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "provider": {
           "name": "provider",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "providerAccountId": {
           "name": "providerAccountId",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "refresh_token": {
           "name": "refresh_token",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "access_token": {
           "name": "access_token",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "expires_at": {
           "name": "expires_at",
-          "type": "integer",
+          "type": "int",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "token_type": {
           "name": "token_type",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "scope": {
           "name": "scope",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "id_token": {
           "name": "id_token",
-          "type": "text",
+          "type": "varchar(2048)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "session_state": {
           "name": "session_state",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -93,10 +96,10 @@
         }
       },
       "foreignKeys": {
-        "Account_userId_User_id_fk": {
-          "name": "Account_userId_User_id_fk",
-          "tableFrom": "Account",
-          "tableTo": "User",
+        "account_userId_user_id_fk": {
+          "name": "account_userId_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
           "columnsFrom": [
             "userId"
           ],
@@ -110,34 +113,36 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "PasswordResetToken": {
-      "name": "PasswordResetToken",
-      "schema": "",
+    "passwordResetToken": {
+      "name": "passwordResetToken",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(455)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "token": {
           "name": "token",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "expires": {
           "name": "expires",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -158,33 +163,39 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "passwordResetToken_id": {
+          "name": "passwordResetToken_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
       "uniqueConstraints": {
-        "PasswordResetToken_token_unique": {
-          "name": "PasswordResetToken_token_unique",
-          "nullsNotDistinct": false,
+        "passwordResetToken_token_unique": {
+          "name": "passwordResetToken_token_unique",
           "columns": [
             "token"
           ]
         }
       }
     },
-    "TwoFactorConfirmation": {
-      "name": "TwoFactorConfirmation",
-      "schema": "",
+    "twoFactorConfirmation": {
+      "name": "twoFactorConfirmation",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "userId": {
           "name": "userId",
-          "type": "uuid",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -197,10 +208,10 @@
         }
       },
       "foreignKeys": {
-        "TwoFactorConfirmation_userId_User_id_fk": {
-          "name": "TwoFactorConfirmation_userId_User_id_fk",
-          "tableFrom": "TwoFactorConfirmation",
-          "tableTo": "User",
+        "twoFactorConfirmation_userId_user_id_fk": {
+          "name": "twoFactorConfirmation_userId_user_id_fk",
+          "tableFrom": "twoFactorConfirmation",
+          "tableTo": "user",
           "columnsFrom": [
             "userId"
           ],
@@ -211,37 +222,46 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "twoFactorConfirmation_id": {
+          "name": "twoFactorConfirmation_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
-    "TwoFactorToken": {
-      "name": "TwoFactorToken",
-      "schema": "",
+    "twoFactorToken": {
+      "name": "twoFactorToken",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(455)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "token": {
           "name": "token",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "expires": {
           "name": "expires",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -262,63 +282,74 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "twoFactorToken_id": {
+          "name": "twoFactorToken_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
       "uniqueConstraints": {
-        "TwoFactorToken_token_unique": {
-          "name": "TwoFactorToken_token_unique",
-          "nullsNotDistinct": false,
+        "twoFactorToken_token_unique": {
+          "name": "twoFactorToken_token_unique",
           "columns": [
             "token"
           ]
         }
       }
     },
-    "User": {
-      "name": "User",
-      "schema": "",
+    "user": {
+      "name": "user",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "name": {
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(455)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "emailVerified": {
           "name": "emailVerified",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "image": {
           "name": "image",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "password": {
           "name": "password",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "role": {
           "name": "role",
-          "type": "UserRole",
+          "type": "varchar(10)",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": "'USER'"
         },
         "isTwoFactorEnabled": {
@@ -326,6 +357,7 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
           "default": false
         }
       },
@@ -339,45 +371,53 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "user_id": {
+          "name": "user_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
       "uniqueConstraints": {
-        "User_email_unique": {
-          "name": "User_email_unique",
-          "nullsNotDistinct": false,
+        "user_email_unique": {
+          "name": "user_email_unique",
           "columns": [
             "email"
           ]
         }
       }
     },
-    "VerificationToken": {
-      "name": "VerificationToken",
-      "schema": "",
+    "verificationToken": {
+      "name": "verificationToken",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
-          "default": "gen_random_uuid()"
+          "autoincrement": false
         },
         "email": {
           "name": "email",
-          "type": "text",
+          "type": "varchar(455)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "token": {
           "name": "token",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "expires": {
           "name": "expires",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -398,11 +438,17 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "verificationToken_id": {
+          "name": "verificationToken_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
       "uniqueConstraints": {
-        "VerificationToken_token_unique": {
-          "name": "VerificationToken_token_unique",
-          "nullsNotDistinct": false,
+        "verificationToken_token_unique": {
+          "name": "verificationToken_token_unique",
           "columns": [
             "token"
           ]
@@ -410,19 +456,10 @@
       }
     }
   },
-  "enums": {
-    "UserRole": {
-      "name": "UserRole",
-      "values": {
-        "USER": "USER",
-        "ADMIN": "ADMIN"
-      }
-    }
-  },
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
+    "tables": {},
+    "columns": {}
   }
 }

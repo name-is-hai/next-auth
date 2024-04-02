@@ -1,1 +1,0 @@
-ALTER TABLE "User" ALTER COLUMN "role" SET DATA TYPE text;

@@ -20,15 +20,18 @@ export const generateTwoFactorToken = async (email: string) => {
       .delete(twoFactorToken)
       .where(eq(twoFactorToken.id, exitsToken.id));
   }
-  const factorToken = await drizzle
-    .insert(twoFactorToken)
-    .values({
-      email,
-      token,
-      expires,
-    })
-    .returning();
-  return factorToken[0];
+  const factorToken = await drizzle.insert(twoFactorToken).values({
+    email,
+    token,
+    expires,
+  });
+  if (factorToken[0].affectedRows === 0)
+    throw new Error("Sorry, something went wrong!");
+  return {
+    email,
+    token,
+    expires,
+  };
 };
 
 export const generatePasswordResetToken = async (email: string) => {
@@ -40,15 +43,18 @@ export const generatePasswordResetToken = async (email: string) => {
       .delete(passwordResetToken)
       .where(eq(passwordResetToken.id, exitsToken.id));
   }
-  const resetToken = await drizzle
-    .insert(passwordResetToken)
-    .values({
-      email,
-      token,
-      expires,
-    })
-    .returning();
-  return resetToken[0];
+  const resetToken = await drizzle.insert(passwordResetToken).values({
+    email,
+    token,
+    expires,
+  });
+  if (resetToken[0].affectedRows === 0)
+    throw new Error("Sorry, something went wrong!");
+  return {
+    email,
+    token,
+    expires,
+  };
 };
 export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
@@ -60,13 +66,16 @@ export const generateVerificationToken = async (email: string) => {
       .delete(verificationToken)
       .where(eq(verificationToken.id, exitsToken.id));
   }
-  const verifiToken = await drizzle
-    .insert(verificationToken)
-    .values({
-      token,
-      email,
-      expires,
-    })
-    .returning();
-  return verifiToken[0];
+  const verifyToken = await drizzle.insert(verificationToken).values({
+    token,
+    email,
+    expires,
+  });
+  if (verifyToken[0].affectedRows === 0)
+    throw new Error("Sorry, something went wrong!");
+  return {
+    email,
+    token,
+    expires,
+  };
 };

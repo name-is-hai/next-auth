@@ -1,19 +1,12 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1712027420173,
-      "tag": "0000_living_tarantula",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1712035348526,
-      "tag": "0001_majestic_typhoid_mary",
+      "when": 1712055786744,
+      "tag": "0000_lean_shinobi_shaw",
       "breakpoints": true
     }
   ]

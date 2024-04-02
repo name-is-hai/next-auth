@@ -2,11 +2,11 @@
 
 import { getPasswordRestTokenByToken as getPasswordResetTokenByToken } from "@/data/password-rest-token";
 import { getUserByEmail } from "@/data/user";
-import { db as drizzle } from "drizzle";
-import { eq } from "drizzle-orm";
-import { passwordResetToken, user, verificationToken } from "drizzle/schema";
 import { NewPasswordSchema } from "@/schemas";
 import { hash } from "bcryptjs";
+import { db as drizzle } from "drizzle";
+import { eq } from "drizzle-orm";
+import { passwordResetToken, user } from "drizzle/schema";
 import { z } from "zod";
 
 export const newPassword = async (

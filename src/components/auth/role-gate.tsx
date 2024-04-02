@@ -1,7 +1,7 @@
 "use client";
 
-import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { FormError } from "@/components/form-error";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { user } from "drizzle/schema";
 
 type RoleGateProps = {

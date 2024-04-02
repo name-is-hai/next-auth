@@ -2,12 +2,12 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth, { type DefaultSession } from "next-auth";
 
 import authConfig from "@/auth.config";
+import { getAccountByUserId } from "@/data/account";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { getUserById } from "@/data/user";
 import { db as drizzle } from "drizzle";
 import { eq } from "drizzle-orm";
 import { twoFactorConfirmation, user } from "drizzle/schema";
-import { getAccountByUserId } from "@/data/account";
-import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
 type UserRole = (typeof user.role.enumValues)[number];
 
@@ -65,10 +65,10 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      // console.log({
-      //   sessionToken: token,
-      //   session,
-      // });
+      console.log({
+        sessionToken: token,
+        session,
+      });
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }

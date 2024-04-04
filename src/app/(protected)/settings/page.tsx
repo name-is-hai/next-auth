@@ -1,6 +1,6 @@
 "use client";
 
-import { settings } from "@/actions/setings";
+import { settings } from "@/actions/settings";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { Button } from "@/components/ui/button";

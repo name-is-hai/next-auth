@@ -1,9 +1,9 @@
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { migrate } from "drizzle-orm/mysql2/migrator";
-import { createPool } from "mysql2/promise";
+import { createConnection } from "mysql2/promise";
 
 const main = async () => {
-  const poolConnection = createPool({
+  const poolConnection = await createConnection({
     user: String(process.env.DATABASE_USERNAME),
     password: String(process.env.DATABASE_PASSWORD),
     host: String(process.env.DATABASE_HOST),

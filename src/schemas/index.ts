@@ -1,6 +1,5 @@
 import { user } from "drizzle/schema";
 import { z } from "zod";
-// export const SettingsSchema = createInsertSchema();
 export const SettingsSchema = z
   .object({
     name: z.string().optional(),

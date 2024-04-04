@@ -79,7 +79,7 @@ export default function AdminPage() {
         <p className="text-2xl font-semibold text-center">🔑 Admin</p>
       </CardHeader>
       <CardContent className="space-y-4">
-        <RoleGate allowedRole={user.role.enumValues[0]}>
+        <RoleGate allowedRole={user.role.enumValues[1]}>
           <FormSuccess message="You are allowed to see this content!" />
         </RoleGate>
         <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">

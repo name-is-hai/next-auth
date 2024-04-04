@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
+  mysqlEnum,
   varchar,
 } from "drizzle-orm/mysql-core";
 import { createId } from "@paralleldrive/cuid2";
@@ -23,9 +24,7 @@ export const user = mysqlTable(
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
     password: text("password"),
-    role: varchar("role", { length: 10, enum: ["USER", "ADMIN"] })
-      .default("USER")
-      .notNull(),
+    role: mysqlEnum("role", ["USER", "ADMIN"]).default("USER").notNull(),
     isTwoFactorEnabled: boolean("isTwoFactorEnabled").default(false).notNull(),
   },
   (table) => {
@@ -37,7 +36,6 @@ export const user = mysqlTable(
 
 // Define relationship for user table
 export const userRelationship = relations(user, ({ one, many }) => ({
-  // Error might be here, ensure correct reference to twoFactorConfirmation table
   twoFactorConfirmation: one(twoFactorConfirmation, {
     fields: [user.id],
     references: [twoFactorConfirmation.userId],

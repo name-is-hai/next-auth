@@ -172,12 +172,20 @@ export default function SettingsPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={user.role.enumValues[0]}>
+                        {user.role.enumValues.map((role) => (
+                          <SelectItem
+                            key={role}
+                            value={role}
+                          >
+                            {role}
+                          </SelectItem>
+                        ))}
+                        {/* <SelectItem value={user.role.enumValues[1]}>
                           ADMIN
                         </SelectItem>
-                        <SelectItem value={user.role.enumValues[1]}>
+                        <SelectItem value={user.role.enumValues[0]}>
                           USER
-                        </SelectItem>
+                        </SelectItem> */}
                       </SelectContent>
                     </Select>
                     <FormMessage />

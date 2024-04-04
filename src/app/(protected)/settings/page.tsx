@@ -180,12 +180,6 @@ export default function SettingsPage() {
                             {role}
                           </SelectItem>
                         ))}
-                        {/* <SelectItem value={user.role.enumValues[1]}>
-                          ADMIN
-                        </SelectItem>
-                        <SelectItem value={user.role.enumValues[0]}>
-                          USER
-                        </SelectItem> */}
                       </SelectContent>
                     </Select>
                     <FormMessage />

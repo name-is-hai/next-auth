@@ -5,6 +5,7 @@ import credentials from "next-auth/providers/credentials";
 import { getUserByEmail } from "@/data/user";
 import github from "next-auth/providers/github";
 import google from "next-auth/providers/google";
+import { tree } from "next/dist/build/templates/app-page";
 export default {
   providers: [
     google({
@@ -30,5 +31,4 @@ export default {
       },
     }),
   ],
-  trustHost: false,
 } satisfies NextAuthConfig;

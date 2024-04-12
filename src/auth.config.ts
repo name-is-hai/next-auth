@@ -30,4 +30,5 @@ export default {
       },
     }),
   ],
+  trustHost: false,
 } satisfies NextAuthConfig;
